@@ -92,11 +92,6 @@ storiesOf('react-d3-speedometer', module)
     // You can also configure `withKnobs` as a global decorator.
     .addDecorator(withKnobs)
 
-    // default view with no configuration
-    .add('Default with no config', () => (
-        <ReactSpeedometer />
-    ))
-
     .addWithInfo(
         'Configuring values',
         () => {
@@ -145,6 +140,12 @@ storiesOf('react-d3-speedometer', module)
                     />)},
         { source: true, inline: true, header: false }
     )
+
+
+    // default view with no configuration
+    .add('Default with no config', () => (
+        <ReactSpeedometer />
+    ))
 
     // fluid display view
     .addWithInfo(

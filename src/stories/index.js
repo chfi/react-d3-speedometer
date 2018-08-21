@@ -23,7 +23,7 @@ import ReactSpeedometer from '../index';
 
 // a custom button with state to demonstrate force rendering
 class SpeedoButton extends React.Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -49,7 +49,7 @@ class SpeedoButton extends React.Component {
                 segments: 10,
                 width: 400,
                 height: 400
-            }  
+            }
         ];
     };
 
@@ -57,8 +57,8 @@ class SpeedoButton extends React.Component {
         return(
             <div>
                 <h4>
-                    Click the below button to force rerendering the whole component on props change. 
-                    By default, on props change, only the speedometer value/needle value will be updated and animated for smooth visualization. 
+                    Click the below button to force rerendering the whole component on props change.
+                    By default, on props change, only the speedometer value/needle value will be updated and animated for smooth visualization.
                     Below button will toggle between two sets of totally different appearances, when forceRender option is given true.
                 </h4>
 
@@ -73,11 +73,11 @@ class SpeedoButton extends React.Component {
                 } }>
                     <strong>Force Re render component on props change</strong>
                 </button>
-                <ReactSpeedometer 
+                <ReactSpeedometer
                     value={this.state.value}
                     startColor={this.state.startColor}
                     forceRender={true}
-                    segments={this.state.segments} 
+                    segments={this.state.segments}
                     width={this.state.width}
                     height={this.state.height}
                 />
@@ -90,31 +90,39 @@ class SpeedoButton extends React.Component {
 storiesOf('react-d3-speedometer', module)
     // Add the `withKnobs` decorator to add knobs support to your stories.
     // You can also configure `withKnobs` as a global decorator.
-    // .addDecorator(withKnobs)
-    
+    .addDecorator(withKnobs)
+
     // default view with no configuration
     .add('Default with no config', () => (
         <ReactSpeedometer />
     ))
-    // configuring values
+
     .addWithInfo(
-        'Configuring values', 
-        () => (
-            <ReactSpeedometer
-                maxValue={500}
-                value={473}
-                needleColor="red"
-                startColor="green"
-                segments={10}
-                endColor="blue"
-                textColor="grey"
-            />
-        ),
+        'Configuring values',
+        () => {
+
+            const value = number('Value', 473);
+            const minAngle = number('Minimum arc angle', -90);
+            const maxAngle = number('Maximum arc angle',  90);
+
+            return (<ReactSpeedometer
+                    maxValue={500}
+                    value={value}
+                    minAngle={minAngle}
+                    maxAngle={maxAngle}
+                    needleColor="red"
+                    startColor="green"
+                    segments={10}
+                    endColor="blue"
+                    textColor="grey"
+                    forceRender="true"
+                    />)},
         { source: true, inline: true, header: false }
     )
+
     // fluid display view
     .addWithInfo(
-        'Fluid Width view', 
+        'Fluid Width view',
         () => (
             <div style={{
                 width: "500px",
@@ -146,7 +154,7 @@ storiesOf('react-d3-speedometer', module)
         { source: true, inline: true, header: false }
     )
     // knobs for demonstrating force render
-    .add('force render the component', 
+    .add('force render the component',
         withInfo({ source: false, text: 'Usage: &lt;ReactSpeedometer forceRender={true} /&gt;', inline: true, header: false })( () => {
             return (
                 <SpeedoButton />
@@ -183,4 +191,3 @@ storiesOf('react-d3-speedometer', module)
         { source: true, inline: true, header: false }
     )
     ;
-

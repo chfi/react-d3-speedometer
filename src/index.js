@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 // selectively import d3 components for reducing file size
 // import * as d3 from "d3";
-import { 
-    format as d3Format , 
+import {
+    format as d3Format ,
     scaleLinear as d3ScaleLinear,
     range as d3Range,
     arc as d3Arc,
@@ -52,7 +52,7 @@ class ReactSpeedometer extends React.Component {
     static displayName = 'ReactSpeedometer';
 
     constructor(props) {
-        
+
         super(props);
 
         // list of d3 refs to share within the components
@@ -73,7 +73,7 @@ class ReactSpeedometer extends React.Component {
         // render the gauge here
         this.renderGauge();
     };
-    
+
     render = () => {
         return (
             <div ref={ref => this.gaugeDiv = ref}>
@@ -107,7 +107,7 @@ class ReactSpeedometer extends React.Component {
             this.renderGauge();
         } else {
             // let us just animate the value of the speedometer
-            this.updateReadings();    
+            this.updateReadings();
         }
     }
 
@@ -150,6 +150,8 @@ class ReactSpeedometer extends React.Component {
                 height: PROPS.fluidWidth ? default_config.parentHeight : ( PROPS.height ),
                 // ring width should be 1/4 th of width
                 ringWidth: PROPS.ringWidth,
+                minAngle: PROPS.minAngle || default_config.minAngle,
+                maxAngle: PROPS.maxAngle || default_config.maxAngle,
                 // min/max values
                 minValue: PROPS.minValue,
                 maxValue: PROPS.maxValue,
@@ -158,9 +160,9 @@ class ReactSpeedometer extends React.Component {
                 // segments in the speedometer
                 majorTicks: PROPS.segments,
                 // color range for the segments
-                arcColorFn: d3InterpolateHsl( 
-                                d3Rgb( PROPS.startColor ), 
-                                d3Rgb( PROPS.endColor ) 
+                arcColorFn: d3InterpolateHsl(
+                                d3Rgb( PROPS.startColor ),
+                                d3Rgb( PROPS.endColor )
                             ),
                 // needle configuration
                 needleTransition: PROPS.needleTransition,
@@ -328,7 +330,7 @@ class ReactSpeedometer extends React.Component {
                 var pointerLine = d3Line()
                                     // .curve( d3.curveMonotoneX );
                                     .curve( d3CurveMonotoneX );
-                
+
                 var pg = svg.append('g').data([lineData])
                             .attr('class', 'pointer')
                             .attr('transform', centerTx)
@@ -339,7 +341,7 @@ class ReactSpeedometer extends React.Component {
                                             .attr('d', pointerLine )
                                             .attr('transform', 'rotate(' + config.minAngle + ')');
 
-                // TODO: no need to update inside render; 
+                // TODO: no need to update inside render;
                 // we will explicitly call 'update' method when needed to update
                 // update(newValue === undefined ? 0 : newValue);
             }
@@ -353,7 +355,7 @@ class ReactSpeedometer extends React.Component {
 
                 // NOTE: not using template string to support IE 9/10/11
                 // ref: https://caniuse.com/#feat=template-literals
-                
+
                 // if needed, maybe we can later add some polyfill support
                 // ref: https://stackoverflow.com/a/29771751/1410291
                 function assemble(literal, params) {
@@ -384,7 +386,7 @@ class ReactSpeedometer extends React.Component {
             // configure for first time !?
             configure();
 
-            // return a object with all our functions; 
+            // return a object with all our functions;
             // also expose the 'config' object; for now, we will update the 'labelFormat' while updating
             return {
                 configure: configure,
@@ -428,7 +430,7 @@ class ReactSpeedometer extends React.Component {
         switch (transition) {
             // ease linear
             case "easeLinear":
-                return d3EaseLinear; 
+                return d3EaseLinear;
                 break;
             // easeQuadIn as d3EaseQuadIn,
             case "easeQuadIn":
@@ -544,7 +546,7 @@ class ReactSpeedometer extends React.Component {
                 break;
             // ease elastic transition
             case "easeElastic":
-                return d3EaseElastic; 
+                return d3EaseElastic;
                 break;
 
             // if not a valid transition; throw a warning and return the default transition
@@ -560,11 +562,14 @@ class ReactSpeedometer extends React.Component {
 
 
 // define the proptypes
-// make all the props and 'required' and provide sensible default in the 'defaultProps'
+// make *most* props 'required' and provide sensible default in the 'defaultProps'
 ReactSpeedometer.propTypes = {
     value: PropTypes.number.isRequired,
     minValue: PropTypes.number.isRequired,
     maxValue: PropTypes.number.isRequired,
+
+    minAngle: PropTypes.number,
+    maxAngle: PropTypes.number,
 
     // tracks if the component should update as the whole or just animate the value
     // default will just animate the value after initialization/mounting

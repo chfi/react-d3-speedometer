@@ -101,18 +101,44 @@ storiesOf('react-d3-speedometer', module)
         'Configuring values',
         () => {
 
-            const value = number('Value', 473);
-            const minAngle = number('Minimum arc angle', -90);
-            const maxAngle = number('Maximum arc angle',  90);
+            const minValue = 0;
+            const maxValue = 500;
+            const valueOptions = {
+                range: true,
+                min: minValue,
+                max: maxValue,
+                step: 10
+            };
+            const value = number('Value', 473, valueOptions);
+
+            const arcAngleOptions = {
+                range: true,
+                min: -180,
+                max: 180,
+                step: 5
+            };
+            const minAngle = number('Minimum arc angle', -90, arcAngleOptions);
+            const maxAngle = number('Maximum arc angle',  90, arcAngleOptions);
+
+            const ringWidth = number('Segment ring width', 60);
+
+            const ringInset  = number('Outer-radius to segment distance', 20);
+            const labelInset = number('Outer-radius to value label distance', 10);
+
+            const segments = number('Number of segments', 10);
 
             return (<ReactSpeedometer
-                    maxValue={500}
+                    maxValue={maxValue}
+                    minValue={minValue}
                     value={value}
                     minAngle={minAngle}
                     maxAngle={maxAngle}
+                    ringInset={ringInset}
+                    labelInset={labelInset}
+                    ringWidth={ringWidth}
                     needleColor="red"
                     startColor="green"
-                    segments={10}
+                    segments={segments}
                     endColor="blue"
                     textColor="grey"
                     forceRender="true"

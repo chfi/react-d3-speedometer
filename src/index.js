@@ -150,6 +150,8 @@ class ReactSpeedometer extends React.Component {
                 height: PROPS.fluidWidth ? default_config.parentHeight : ( PROPS.height ),
                 // ring width should be 1/4 th of width
                 ringWidth: PROPS.ringWidth,
+                ringInset: PROPS.ringInset   || default_config.ringInset,
+                labelInset: PROPS.labelInset || default_config.labelInset,
                 minAngle: PROPS.minAngle || default_config.minAngle,
                 maxAngle: PROPS.maxAngle || default_config.maxAngle,
                 // min/max values
@@ -570,6 +572,9 @@ ReactSpeedometer.propTypes = {
 
     minAngle: PropTypes.number,
     maxAngle: PropTypes.number,
+
+    ringInset: PropTypes.number,
+    labelInset: PropTypes.number,
 
     // tracks if the component should update as the whole or just animate the value
     // default will just animate the value after initialization/mounting

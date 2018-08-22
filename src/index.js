@@ -181,14 +181,14 @@ class ReactSpeedometer extends React.Component {
             // merge default config with the config
             config = Object.assign( {}, default_config, config );
 
-            var range = undefined,
+            var angleRange = undefined,
                 r = undefined,
                 pointerHeadLength = undefined,
                 value = 0,
 
                 svg = undefined,
                 arc = undefined,
-                scale = undefined,
+                valueScale = undefined,
 
                 ticks = undefined,
                 tickData = undefined;
@@ -201,8 +201,8 @@ class ReactSpeedometer extends React.Component {
             }
 
             function newAngle(d) {
-                var ratio = scale(d);
-                var newAngle = config.minAngle + (ratio * range);
+                var ratio = valueScale(d);
+                var newAngle = config.minAngle + (ratio * angleRange);
 
                 return newAngle;
             }
@@ -212,36 +212,32 @@ class ReactSpeedometer extends React.Component {
                 // merge the config with incoming (optional) configuration
                 // config = Object.assign( {}, config, configuration );
 
-                range = config.maxAngle - config.minAngle;
-                // r = config.size / 2;
+                angleRange = config.maxAngle - config.minAngle;
                 r = config.width / 2;
                 pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
 
                 // a linear scale that maps domain values to a percent from 0..1
                 // scale = d3.scaleLinear()
-                scale = d3ScaleLinear()
+                valueScale = d3ScaleLinear()
                             .range([0, 1])
                             .domain([config.minValue, config.maxValue]);
 
-                ticks = scale.ticks(config.majorTicks);
-                // tickData = d3.range(config.majorTicks)
+                ticks = valueScale.ticks(config.majorTicks);
                 tickData = d3Range(config.majorTicks)
                                 .map(function() {
                                     return 1 / config.majorTicks;
                                 });
 
-                // arc = d3.svg.arc()
-                // arc = d3.arc()
                 arc = d3Arc()
                         .innerRadius(r - config.ringWidth - config.ringInset)
                         .outerRadius(r - config.ringInset)
                         .startAngle(function(d, i) {
                             var ratio = d * i;
-                            return deg2rad(config.minAngle + (ratio * range));
+                            return deg2rad(config.minAngle + (ratio * angleRange));
                         })
                         .endAngle(function(d, i) {
                             var ratio = d * (i + 1);
-                            return deg2rad(config.minAngle + (ratio * range));
+                            return deg2rad(config.minAngle + (ratio * angleRange));
                         });
             }
 
@@ -286,11 +282,14 @@ class ReactSpeedometer extends React.Component {
 
                 lg.selectAll('text')
                     .data(ticks)
-                        .enter().append('text')
+                    .enter().append('text')
                     .attr('transform', function(d) {
-                        var ratio = scale(d);
-                        var newAngle = config.minAngle + (ratio * range);
-                        return 'rotate(' + newAngle + ') translate(0,' + (config.labelInset - r) + ')';
+                        const radius = config.labelInset - r;
+                        const ratio = valueScale(d);
+                        const newAngle = deg2rad(config.minAngle + (ratio * angleRange) + 90.0);
+                        const x = Math.cos(newAngle) * radius;
+                        const y = Math.sin(newAngle) * radius;
+                        return 'translate(' + x + ',' + y + ')';
                     })
                     .text(config.labelFormat)
                     // add class for text label
@@ -299,20 +298,19 @@ class ReactSpeedometer extends React.Component {
                     .style("text-anchor", "middle")
                     .style("font-size", "14px")
                     .style("font-weight", "bold")
-                    // .style("fill", "#666");
                     .style("fill", config.textColor);
 
                 // save current value reference
                 self._d3_refs.current_value_text = svg.append("g")
                     .attr("transform", "translate(" + config.width/2 + "," + (config.width/2) + ")")
-                        .append("text")
+                    .append("text")
                     // add class for the text
                     .attr("class", 'current-value')
                     .attr("text-anchor", "middle")
                     // position the text 23pt below
                     .attr("y", 23)
-                        // add text
-                        .text( config.currentValue || "" )
+                    // add text
+                    .text( config.currentValue || "" )
                     .style("font-size", "16px")
                     .style("font-weight", "bold")
                     // .style("fill", "#666");
@@ -369,9 +367,9 @@ class ReactSpeedometer extends React.Component {
             }
 
             function update (newValue) {
-                var ratio = scale(newValue);
+                var ratio = valueScale(newValue);
 
-                var newAngle = config.minAngle + (ratio * range);
+                var newAngle = config.minAngle + (ratio * angleRange);
                 // update the pointer
                 self._d3_refs.pointer.transition()
                     .duration( config.needleTransitionDuration )
@@ -587,6 +585,15 @@ ReactSpeedometer.propTypes = {
     // segments to show in the speedometer
     segments: PropTypes.number.isRequired,
 
+    // optionally define a recursive set of segment ticks and tick sizes
+    tickSegments: PropTypes.arrayOf(PropTypes.shape({
+        numTicks: PropTypes.number,
+        tickSize: PropTypes.number
+    })),
+    // tickSegments: PropTypes.arrayOf((propValue, key) => {
+    //     return (propValue
+    // });
+
     // color strings
     needleColor: PropTypes.string.isRequired,
     startColor: PropTypes.string.isRequired,
@@ -603,6 +610,8 @@ ReactSpeedometer.propTypes = {
     valueFormat: PropTypes.string.isRequired,
     // value text format
     currentValueText: PropTypes.string.isRequired
+
+
 };
 
 // define the default proptypes

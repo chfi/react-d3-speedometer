@@ -113,9 +113,9 @@ class ReactSpeedometer extends React.Component {
 
     getGauge () {
 
-        var self = this; // save reference
+        const self = this; // save reference
 
-        var PROPS = this.props;
+        const PROPS = this.props;
 
         // main gauge function;
         // takes a container inside which we will display the speedometer
@@ -124,7 +124,7 @@ class ReactSpeedometer extends React.Component {
         return (container) => {
 
             // default config that are 'not' configurable
-            var default_config = {
+            const default_config = {
                 ringInset: 20,
 
                 pointerWidth: 10,
@@ -142,7 +142,7 @@ class ReactSpeedometer extends React.Component {
             };
 
             // START: Configurable values
-            var config = {
+            let config = {
                 // width/height config
                 // if fluidWidth; width/height taken from the parent of the ReactSpeedometer
                 // else if width/height given it is used; else our default
@@ -181,8 +181,7 @@ class ReactSpeedometer extends React.Component {
             // merge default config with the config
             config = Object.assign( {}, default_config, config );
 
-            var angleRange = undefined,
-                r = undefined,
+            let angleRange = undefined,
                 pointerHeadLength = undefined,
                 value = 0,
 
@@ -193,16 +192,13 @@ class ReactSpeedometer extends React.Component {
                 ticks = undefined,
                 tickData = undefined;
 
-            // var donut = d3.pie();
-            var donut = d3Pie();
-
             function deg2rad(deg) {
                 return deg * Math.PI / 180;
             }
 
             function newAngle(d) {
-                var ratio = valueScale(d);
-                var newAngle = config.minAngle + (ratio * angleRange);
+                const ratio = valueScale(d);
+                const newAngle = config.minAngle + (ratio * angleRange);
 
                 return newAngle;
             }
@@ -211,9 +207,8 @@ class ReactSpeedometer extends React.Component {
 
                 // merge the config with incoming (optional) configuration
                 // config = Object.assign( {}, config, configuration );
-
+                const r = config.width / 2;
                 angleRange = config.maxAngle - config.minAngle;
-                r = config.width / 2;
                 pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
 
                 // a linear scale that maps domain values to a percent from 0..1
@@ -232,16 +227,17 @@ class ReactSpeedometer extends React.Component {
                         .innerRadius(r - config.ringWidth - config.ringInset)
                         .outerRadius(r - config.ringInset)
                         .startAngle(function(d, i) {
-                            var ratio = d * i;
+                            const ratio = d * i;
                             return deg2rad(config.minAngle + (ratio * angleRange));
                         })
                         .endAngle(function(d, i) {
-                            var ratio = d * (i + 1);
+                            const ratio = d * (i + 1);
                             return deg2rad(config.minAngle + (ratio * angleRange));
                         });
             }
 
             function centerTranslation() {
+                let r = config.width / 2;
                 return 'translate(' + r + ',' + r + ')';
             }
 
@@ -251,32 +247,30 @@ class ReactSpeedometer extends React.Component {
 
             function render (newValue) {
 
+                const r = config.width / 2;
+
                 // svg = d3.select(container)
                 svg = d3Select( container )
                         .append('svg:svg')
-                        // .attr('class', 'gauge')
-                        // adding class 'speedometer' for the main svg holder
-                        .attr('class', 'speedometer')
                         .attr('width', config.width)
                         .attr('height', config.height);
 
-                var centerTx = centerTranslation();
+                const centerTx = 'translate(' + r + ',' + r + ')';
 
-                var arcs = svg.append('g')
+                const arcs = svg.append('g')
                                 .attr('class', 'arc')
                                 .attr('transform', centerTx);
 
                 arcs.selectAll('path')
                         .data(tickData)
-                            .enter()
+                        .enter()
                         .append('path')
-                        .attr('class', 'speedo-segment')
                         .attr('fill', function(d, i) {
                             return config.arcColorFn(d * i);
                         })
                         .attr('d', arc);
 
-                var lg = svg.append('g')
+                const lg = svg.append('g')
                             .attr('class', 'label')
                             .attr('transform', centerTx);
 
@@ -317,7 +311,7 @@ class ReactSpeedometer extends React.Component {
                     .style("fill", config.textColor);
 
 
-                var lineData = [
+                const lineData = [
                     [config.pointerWidth / 2, 0],
                     [0, -pointerHeadLength],
                     [-(config.pointerWidth / 2), 0],
@@ -325,13 +319,11 @@ class ReactSpeedometer extends React.Component {
                     [config.pointerWidth / 2, 0]
                 ];
 
-                // var pointerLine = d3.svg.line().interpolate('monotone');
-                // var pointerLine = d3.line()
-                var pointerLine = d3Line()
+                const pointerLine = d3Line()
                                     // .curve( d3.curveMonotoneX );
                                     .curve( d3CurveMonotoneX );
 
-                var pg = svg.append('g').data([lineData])
+                const pg = svg.append('g').data([lineData])
                             .attr('class', 'pointer')
                             .attr('transform', centerTx)
                             .style("fill", config.needleColor)
@@ -362,14 +354,14 @@ class ReactSpeedometer extends React.Component {
                     // ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
                     return new Function(params, "return `"+literal+"`;");
                 }
-                var template = assemble(config.currentValueText, "value");
+                const template = assemble(config.currentValueText, "value");
                 return template(value);
             }
 
             function update (newValue) {
-                var ratio = valueScale(newValue);
+                const ratio = valueScale(newValue);
 
-                var newAngle = config.minAngle + (ratio * angleRange);
+                const newAngle = config.minAngle + (ratio * angleRange);
                 // update the pointer
                 self._d3_refs.pointer.transition()
                     .duration( config.needleTransitionDuration )

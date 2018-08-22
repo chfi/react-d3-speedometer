@@ -270,6 +270,35 @@ class ReactSpeedometer extends React.Component {
                         })
                         .attr('d', arc);
 
+
+                const exampleTickConfig =
+                      [ { numTicks: 14, tickSize: 30 },
+                        { numTicks: 5, tickSize: 10  },
+                        { numTicks: 1, tickSize: 5   } ]
+
+
+                const svgTicks = svg.append('g')
+                      .attr('transform', centerTx);
+
+                svgTicks.selectAll('path')
+                    .data(ticks)
+                    .enter()
+                    .append('path')
+                    .attr('d', (d, i) => {
+                        console.log("d:" + d);
+                        console.log("i:" + i);
+                        const radius = config.labelInset - r;
+                        const ratio = valueScale(d);
+                        const newAngle = deg2rad(config.minAngle + (ratio * angleRange) + 90.0);
+                        const x = Math.cos(newAngle) * radius;
+                        const y = Math.sin(newAngle) * radius;
+
+
+                        return "M 0,0 L " + x + "," + y + " z";
+                    })
+                    .attr('stroke', 'black');
+
+
                 const lg = svg.append('g')
                             .attr('class', 'label')
                             .attr('transform', centerTx);

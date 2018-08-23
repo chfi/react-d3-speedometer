@@ -127,7 +127,7 @@ class ReactSpeedometer extends React.Component {
             const default_config = {
                 ringInset: 20,
 
-                pointerWidth: 10,
+                pointerWidth: 5,
                 pointerTailLength: 5,
                 pointerHeadLengthPercent: 0.9,
 
@@ -271,6 +271,7 @@ class ReactSpeedometer extends React.Component {
                         .attr('d', arc);
 
 
+                /*
                 const exampleTickConfig =
                       [ { numTicks: 14, tickSize: 30 },
                         { numTicks: 5, tickSize: 10  },
@@ -297,6 +298,7 @@ class ReactSpeedometer extends React.Component {
                         return "M 0,0 L " + x + "," + y + " z";
                     })
                     .attr('stroke', 'black');
+                    */
 
 
                 const lg = svg.append('g')
@@ -323,22 +325,6 @@ class ReactSpeedometer extends React.Component {
                     .style("font-weight", "bold")
                     .style("fill", config.textColor);
 
-                // save current value reference
-                self._d3_refs.current_value_text = svg.append("g")
-                    .attr("transform", "translate(" + config.width/2 + "," + (config.width/2) + ")")
-                    .append("text")
-                    // add class for the text
-                    .attr("class", 'current-value')
-                    .attr("text-anchor", "middle")
-                    // position the text 23pt below
-                    .attr("y", 23)
-                    // add text
-                    .text( config.currentValue || "" )
-                    .style("font-size", "16px")
-                    .style("font-weight", "bold")
-                    // .style("fill", "#666");
-                    .style("fill", config.textColor);
-
 
                 const lineData = [
                     [config.pointerWidth / 2, 0],
@@ -357,6 +343,35 @@ class ReactSpeedometer extends React.Component {
                             .attr('transform', centerTx)
                             .style("fill", config.needleColor)
                             // .style("stroke", "green");
+
+
+                const valueCircle =
+                      svg.append("g")
+                      .attr("transform", centerTx)
+                      .append("circle")
+                      .attr("r", 30.0)
+                      .style("fill", "white")
+                      .style("stroke", "black");
+
+                // save current value reference
+                self._d3_refs.current_value_text = svg.append("g")
+                    .attr("transform", centerTx)
+                    .append("text")
+                    // add class for the text
+                    .attr("class", 'current-value')
+                    .attr("text-anchor", "middle")
+                    .attr("dominant-baseline", "central")
+                    // add text
+                    .text( config.currentValue || "" )
+                    .style("font-size", "24px")
+                    .style("font-family", "sans-serif")
+                    // .style("font-weight", "bold")
+                    // .style("fill", "#666");
+                    .style("fill", config.textColor);
+
+
+
+
 
                 self._d3_refs.pointer = pg.append('path')
                                             .attr('d', pointerLine )
@@ -640,6 +655,9 @@ ReactSpeedometer.defaultProps = {
     value: 0,
     minValue: 0,
     maxValue: 1000,
+
+    minAngle: -90,
+    maxAngle:  90,
 
     forceRender: false,
 

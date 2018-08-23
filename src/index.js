@@ -148,6 +148,9 @@ class ReactSpeedometer extends React.Component {
                 // else if width/height given it is used; else our default
                 width: PROPS.fluidWidth ? default_config.parentWidth : ( PROPS.width ),
                 height: PROPS.fluidWidth ? default_config.parentHeight : ( PROPS.height ),
+
+                pointerHeadLengthPercent: PROPS.pointerHeadLengthPercent
+                    || default_config.pointerHeadLengthPercent,
                 // ring width should be 1/4 th of width
                 ringWidth: PROPS.ringWidth,
                 ringInset: PROPS.ringInset   || default_config.ringInset,

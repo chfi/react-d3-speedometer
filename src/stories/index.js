@@ -131,6 +131,7 @@ storiesOf('react-d3-speedometer', module)
                     ringInset={ringInset}
                     labelInset={labelInset}
                     ringWidth={ringWidth}
+                    pointerHeadLengthPercent={0.75}
                     needleColor="red"
                     startColor="green"
                     segments={segments}

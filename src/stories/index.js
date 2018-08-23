@@ -112,13 +112,13 @@ storiesOf('react-d3-speedometer', module)
                 max: 180,
                 step: 5
             };
-            const minAngle = number('Minimum arc angle', -90, arcAngleOptions);
+            const minAngle = number('Minimum arc angle', -120, arcAngleOptions);
             const maxAngle = number('Maximum arc angle',  90, arcAngleOptions);
 
-            const ringWidth = number('Segment ring width', 60);
+            const ringWidth = number('Segment ring width', 4);
 
-            const ringInset  = number('Outer-radius to segment distance', 20);
-            const labelInset = number('Outer-radius to value label distance', 10);
+            const ringInset  = number('Outer-radius to segment distance', 0);
+            const labelInset = number('Outer-radius to value label distance', 42);
 
             const segments = number('Number of segments', 10);
 

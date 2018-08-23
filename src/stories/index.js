@@ -118,7 +118,7 @@ storiesOf('react-d3-speedometer', module)
             const ringWidth = number('Segment ring width', 4);
 
             const ringInset  = number('Outer-radius to segment distance', 0);
-            const labelInset = number('Outer-radius to value label distance', 42);
+            const labelInset = number('Outer-radius to value label distance', 58);
 
             const segments = number('Number of segments', 10);
 

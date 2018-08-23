@@ -203,6 +203,7 @@ class ReactSpeedometer extends React.Component {
                 return newAngle;
             }
 
+
             function configure () {
 
                 // merge the config with incoming (optional) configuration
@@ -244,6 +245,34 @@ class ReactSpeedometer extends React.Component {
             function isRendered() {
                 return (svg !== undefined);
             }
+
+            // given an arc defined by its min and max angles, and how
+            // many pieces to split it into (positive integer), return
+            // an array of angles (of the input unit), splitting the arc into so
+            // many equally sized pieces, including the edges (min- and maxAngle)
+            const arcSegments = (minAngle, maxAngle, numSegments) => {
+                // Map over the range of [0..numTicks] (i.e. numTicks+1 elements, inclusive range);
+                // multiply each value with theta, then add minAngle, where
+                // theta = (maxAngle - minAngle) / numSegments
+                const theta = (maxAngle - minAngle) / numSegments
+
+                const segmentsArray = new Array(numSegments+1);
+                for (let i = 0; i <= numSegments; i++) {
+                    segmentsArray[i] = (theta * i) + minAngle;
+                }
+
+                console.log("( " + minAngle + " -> " + maxAngle + "):");
+                console.log(segmentsArray);
+
+                return segmentsArray;
+            };
+
+            const rad2Cartesian = (angle) => {
+                const newAngle = angle + (Math.PI/2.0);
+                // flipping the x-coordinate since we're doing angles clockwise along the arc...
+                return { x: -Math.cos(newAngle),
+                         y:  Math.sin(newAngle) };
+            };
 
             function render (newValue) {
 

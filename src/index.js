@@ -252,14 +252,12 @@ class ReactSpeedometer extends React.Component {
             // many equally sized pieces, including the edges (min- and maxAngle)
             const arcSegments = (minAngle, maxAngle, numSegments) => {
                 // Map over the range of [0..numTicks] (i.e. numTicks+1 elements, inclusive range);
-                // multiply each value with theta, then add minAngle, where
-                // theta = (maxAngle - minAngle) / numSegments
+                // multiply each value with theta, then add minAngle
                 const theta = (maxAngle - minAngle) / numSegments
 
-                const segmentsArray = new Array(numSegments+1);
-                for (let i = 0; i <= numSegments; i++) {
-                    segmentsArray[i] = (theta * i) + minAngle;
-                }
+                const segmentsArray =
+                      Array.from(new Array(numSegments+1),
+                                 (_, i) => (i * theta) + minAngle);
 
                 console.log("( " + minAngle + " -> " + maxAngle + "):");
                 console.log(segmentsArray);
@@ -269,9 +267,9 @@ class ReactSpeedometer extends React.Component {
 
             const rad2Cartesian = (angle) => {
                 const newAngle = angle + (Math.PI/2.0);
-                // flipping the x-coordinate since we're doing angles clockwise along the arc...
+                // flipping coordinates because we're going clockwise, down is up, hail js, etc.
                 return { x: -Math.cos(newAngle),
-                         y:  Math.sin(newAngle) };
+                         y: -Math.sin(newAngle) };
             };
 
             function render (newValue) {
@@ -300,7 +298,7 @@ class ReactSpeedometer extends React.Component {
                         .attr('d', arc);
 
 
-                /*
+
                 const exampleTickConfig =
                       [ { numTicks: 14, tickSize: 30 },
                         { numTicks: 5, tickSize: 10  },
@@ -310,24 +308,22 @@ class ReactSpeedometer extends React.Component {
                 const svgTicks = svg.append('g')
                       .attr('transform', centerTx);
 
-                svgTicks.selectAll('path')
-                    .data(ticks)
-                    .enter()
-                    .append('path')
-                    .attr('d', (d, i) => {
-                        console.log("d:" + d);
-                        console.log("i:" + i);
-                        const radius = config.labelInset - r;
-                        const ratio = valueScale(d);
-                        const newAngle = deg2rad(config.minAngle + (ratio * angleRange) + 90.0);
-                        const x = Math.cos(newAngle) * radius;
-                        const y = Math.sin(newAngle) * radius;
 
-
-                        return "M 0,0 L " + x + "," + y + " z";
-                    })
-                    .attr('stroke', 'black');
-                    */
+                arcSegments(deg2rad(config.minAngle), deg2rad(config.maxAngle), PROPS.segments)
+                    .map(rad2Cartesian)
+                    .forEach(({x,y}) => {
+                        const r1 = r - config.ringInset;
+                        const r2 = r1 - 20;
+                        console.log("r1: " + r1 + ", r2: " + r2);
+                        const x1 = x * r1;
+                        const x2 = x * r2;
+                        const y1 = y * r1;
+                        const y2 = y * r2;
+                        svgTicks
+                            .append('path')
+                            .attr('d', "M " + x1 + "," + y1 + " L " + x2 + "," + y2 + " z")
+                            .attr('stroke', 'black');
+                    });
 
 
                 const lg = svg.append('g')

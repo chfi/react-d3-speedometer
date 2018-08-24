@@ -291,19 +291,60 @@ class ReactSpeedometer extends React.Component {
 
 
                 const exampleTickConfig =
-                      [ { numTicks: 14, tickSize: 30 },
-                        { numTicks: 5, tickSize: 10  },
-                        { numTicks: 1, tickSize: 5   } ]
+                      [ { numTicks: 14, tickLength: 30 },
+                        { numTicks: 5,  tickLength: 10  },
+                        { numTicks: 1,  tickLength: 5   } ]
+
+
+                const addTicksRecur =
+                      (svgBase, radius, minAngleRad, maxAngleRad) =>
+                      // `ticks` is an array of objects of shape:
+                      // { numTicks :: Int,
+                      //   tickLength :: Pixels }
+                      // Each element describes a given "level" in the tick "hierarchy" (very good explanation)
+                      (ticks) => {
+                          const svgTicks = svgBase.append('g')
+                                .attr('transform', centerTx);
+
+                          ticks.reduce(({minAngle, maxAngle}, curTicks) => {
+                              const nextAngles = arcSegments(minAngle, maxAngle, curTicks.numTicks);
+                              console.log(nextAngles)
+
+                              nextAngles
+                                  .map(rad2Cartesian)
+                                  .forEach(({x,y}) => {
+                                      const r1 = radius;
+                                      const r2 = r1 - curTicks.tickLength;
+                                      const x1 = x * r1;
+                                      const x2 = x * r2;
+                                      const y1 = y * r1;
+                                      const y2 = y * r2;
+                                      svgTicks
+                                          .append('path')
+                                          .attr('d', "M " + x1 + "," + y1 + " L " + x2 + "," + y2 + " z")
+                                          .attr('stroke', '#888888');
+                                  });
+
+                              return nextAngles;
+                          }, [{minAngle: minAngleRad, maxAngle: maxAngleRad}]);
+
+                      };
+
+
+                addTicksRecur(svg,
+                              r - config.ringInset - 1.0,
+                              deg2rad(config.minAngle),
+                              deg2rad(config.maxAngle))(exampleTickConfig);
 
 
                 const addTicks =
                       (svgBase, radius) =>
-                      (minAngleRad, maxAngleRad, numSegments) =>
-                      ({tickLength}) => {
+                      (minAngleRad, maxAngleRad) =>
+                      ({numTicks, tickLength}) => {
                           const svgTicks = svgBase.append('g')
                                 .attr('transform', centerTx);
 
-                          arcSegments(minAngleRad, maxAngleRad, numSegments)
+                          arcSegments(minAngleRad, maxAngleRad, numTicks)
                               .map(rad2Cartesian)
                               .forEach(({x,y}) => {
                                   const r1 = radius;
@@ -319,10 +360,11 @@ class ReactSpeedometer extends React.Component {
                               });
                 };
 
+                /*
                 addTicks
                 (svg, r - config.ringInset - 1.0)
-                (deg2rad(config.minAngle), deg2rad(config.maxAngle), PROPS.segments)
-                ({tickLength: 18});
+                (deg2rad(config.minAngle), deg2rad(config.maxAngle))
+                ({tickLength: 18, numTicks: PROPS.segments});
 
                 const segLength = (config.maxAngle - config.minAngle) / PROPS.segments;
 
@@ -333,11 +375,11 @@ class ReactSpeedometer extends React.Component {
                         const maxA = deg2rad(config.minAngle + (segLength * (i+1)));
                         addTicks
                         (svg, r - config.ringInset)
-                        (minA, maxA, 10)
-                        ({tickLength: 12});
+                        (minA, maxA)
+                        ({tickLength: 12, numTicks: 10});
                     });
 
-
+*/
                 const arcs = svg.append('g')
                                 .attr('class', 'arc')
                                 .attr('transform', centerTx);
@@ -674,11 +716,8 @@ ReactSpeedometer.propTypes = {
     // optionally define a recursive set of segment ticks and tick sizes
     tickSegments: PropTypes.arrayOf(PropTypes.shape({
         numTicks: PropTypes.number,
-        tickSize: PropTypes.number
+        tickLength: PropTypes.number
     })),
-    // tickSegments: PropTypes.arrayOf((propValue, key) => {
-    //     return (propValue
-    // });
 
     // color strings
     needleColor: PropTypes.string.isRequired,

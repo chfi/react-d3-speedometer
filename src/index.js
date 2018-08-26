@@ -178,6 +178,8 @@ class ReactSpeedometer extends React.Component {
                 labelFormat: d3Format( PROPS.valueFormat ),
                 // value text string (template string)
                 currentValueText: PROPS.currentValueText
+
+
             };
             // END: Configurable values
 
@@ -285,11 +287,6 @@ class ReactSpeedometer extends React.Component {
 
                 const centerTx = 'translate(' + r + ',' + r + ')';
 
-                const exampleTickConfig =
-                      [ { numTicks: 10,  tickLength: 18 },
-                        { numTicks: 100, tickLength: 10 },
-                        { numTicks: 20,  tickLength: 14 } ];
-
                 const addTicks =
                       (svgBase, radius) =>
                       (minAngleRad, maxAngleRad) =>
@@ -316,12 +313,11 @@ class ReactSpeedometer extends React.Component {
                               });
                 };
 
-                exampleTickConfig.forEach((tc) => {
+                PROPS.tickSegments.forEach(
                     addTicks
                     (svg, r - config.ringInset - 1.0)
                     (deg2rad(config.minAngle), deg2rad(config.maxAngle))
-                    (tc);
-                });
+                );
 
 
                 const arcs = svg.append('g')
@@ -657,7 +653,7 @@ ReactSpeedometer.propTypes = {
     // segments to show in the speedometer
     segments: PropTypes.number.isRequired,
 
-    // optionally define a recursive set of segment ticks and tick sizes
+    // optionally define a set of segment ticks and tick sizes
     tickSegments: PropTypes.arrayOf(PropTypes.shape({
         numTicks: PropTypes.number,
         tickLength: PropTypes.number

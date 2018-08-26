@@ -122,6 +122,24 @@ storiesOf('react-d3-speedometer', module)
 
             const segments = number('Number of segments', 10);
 
+
+
+            const numTicks1 = number('Number of step 1 ticks', 10);
+            const tickLength1 = number('Step 1 tick length', 18);
+
+            const numTicks2 = number('Number of step 2 ticks', 100);
+            const tickLength2 = number('Step 2 tick length', 10);
+
+            const numTicks3 = number('Number of step 3 ticks', 20);
+            const tickLength3 = number('Step 3 tick length', 14);
+
+            const tickSegments =
+                  [ { numTicks: numTicks1, tickLength: tickLength1 },
+                    { numTicks: numTicks2, tickLength: tickLength2 },
+                    { numTicks: numTicks3, tickLength: tickLength3 } ];
+
+
+
             return (<ReactSpeedometer
                     maxValue={maxValue}
                     minValue={minValue}
@@ -134,7 +152,8 @@ storiesOf('react-d3-speedometer', module)
                     pointerHeadLengthPercent={0.75}
                     needleColor="red"
                     startColor="green"
-                    segments={segments}
+                    // segments={segments}
+                    tickSegments={tickSegments}
                     endColor="blue"
                     textColor="grey"
                     forceRender="true"

@@ -139,7 +139,6 @@ storiesOf('react-d3-speedometer', module)
                     { numTicks: numTicks3, tickLength: tickLength3 } ];
 
 
-
             return (<ReactSpeedometer
                     maxValue={maxValue}
                     minValue={minValue}
@@ -152,7 +151,7 @@ storiesOf('react-d3-speedometer', module)
                     pointerHeadLengthPercent={0.75}
                     needleColor="red"
                     startColor="green"
-                    // segments={segments}
+                    segments={segments}
                     tickSegments={tickSegments}
                     endColor="blue"
                     textColor="grey"

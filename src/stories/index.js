@@ -134,9 +134,9 @@ storiesOf('react-d3-speedometer', module)
             const tickLength3 = number('Step 3 tick length', 14);
 
             const tickSegments =
-                  [ { numTicks: numTicks1, tickLength: tickLength1 },
-                    { numTicks: numTicks2, tickLength: tickLength2 },
-                    { numTicks: numTicks3, tickLength: tickLength3 } ];
+                [ { numTicks: numTicks1, tickLength: tickLength1 },
+                  { numTicks: numTicks2, tickLength: tickLength2 },
+                  { numTicks: numTicks3, tickLength: tickLength3 } ];
 
 
             return (<ReactSpeedometer

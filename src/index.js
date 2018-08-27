@@ -271,8 +271,7 @@ class ReactSpeedometer extends React.Component {
             const rad2Cartesian = (angle) => {
                 const newAngle = angle + (Math.PI/2.0);
                 // flipping coordinates because we're going clockwise, down is up, hail js, etc.
-                return { x: -Math.cos(newAngle),
-                         y: -Math.sin(newAngle) };
+                return { x: -Math.cos(newAngle), y: -Math.sin(newAngle) };
             };
 
             function render (newValue) {
@@ -282,6 +281,7 @@ class ReactSpeedometer extends React.Component {
                 // svg = d3.select(container)
                 svg = d3Select( container )
                         .append('svg:svg')
+                        .attr('class', 'speedometer')
                         .attr('width', config.width)
                         .attr('height', config.height);
 
@@ -311,13 +311,15 @@ class ReactSpeedometer extends React.Component {
                                       .attr('d', "M " + x1 + "," + y1 + " L " + x2 + "," + y2 + " z")
                                       .attr('stroke', '#888888');
                               });
-                };
+                      };
 
-                PROPS.tickSegments.forEach(
-                    addTicks
-                    (svg, r - config.ringInset - 1.0)
-                    (deg2rad(config.minAngle), deg2rad(config.maxAngle))
-                );
+                if (Array.isArray(PROPS.tickSegments)) {
+                    PROPS.tickSegments.forEach(
+                        addTicks
+                        (svg, r - config.ringInset - 1.0)
+                        (deg2rad(config.minAngle), deg2rad(config.maxAngle))
+                    );
+                }
 
 
                 const arcs = svg.append('g')
@@ -328,6 +330,7 @@ class ReactSpeedometer extends React.Component {
                         .data(tickData)
                         .enter()
                         .append('path')
+                        .attr('class', 'speedo-segment')
                         .attr('fill', function(d, i) {
                             return config.arcColorFn(d * i);
                         })

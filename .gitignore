@@ -1,6 +1,5 @@
 node_modules
 *.log
 .idea
-dist
 *.sublime-*
 .DS_Store

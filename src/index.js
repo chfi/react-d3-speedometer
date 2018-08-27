@@ -376,17 +376,15 @@ class ReactSpeedometer extends React.Component {
                 const pg = svg.append('g').data([lineData])
                             .attr('class', 'pointer')
                             .attr('transform', centerTx)
-                            .style("fill", config.needleColor)
-                            // .style("stroke", "green");
-
+                            .style("fill", config.needleColor);
 
                 const valueCircle =
                       svg.append("g")
                       .attr("transform", centerTx)
                       .append("circle")
                       .attr("r", 30.0)
-                      .style("fill", "white")
-                      .style("stroke", "black");
+                      .attr('class', 'valueCircle')
+                      .style("stroke", config.textColor);
 
                 // save current value reference
                 self._d3_refs.current_value_text = svg.append("g")

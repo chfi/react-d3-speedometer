@@ -5,6 +5,8 @@ import infoAddon, { setDefaults, withInfo } from '@storybook/addon-info';
 // knobs for showing dynamic props
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 
+import './styles.css';
+
 // addon-info
 setDefaults({
     inline: true,

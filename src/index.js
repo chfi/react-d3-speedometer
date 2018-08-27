@@ -309,7 +309,7 @@ class ReactSpeedometer extends React.Component {
                                   svgTicks
                                       .append('path')
                                       .attr('d', "M " + x1 + "," + y1 + " L " + x2 + "," + y2 + " z")
-                                      .attr('stroke', '#888888');
+                                      .attr('stroke', PROPS.textColor);
                               });
                       };
 

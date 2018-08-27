@@ -124,6 +124,7 @@ storiesOf('react-d3-speedometer', module)
 
             const segments = number('Number of segments', 10);
 
+            const valueCircleRadius = number('Radius of central circle', 30);
 
 
             const numTicks1 = number('Number of step 1 ticks', 10);
@@ -151,6 +152,7 @@ storiesOf('react-d3-speedometer', module)
                     labelInset={labelInset}
                     ringWidth={ringWidth}
                     pointerHeadLengthPercent={0.75}
+                    valueCircleRadius={valueCircleRadius}
                     needleColor="red"
                     startColor="green"
                     segments={segments}

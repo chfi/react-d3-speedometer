@@ -131,6 +131,8 @@ class ReactSpeedometer extends React.Component {
                 pointerTailLength: 5,
                 pointerHeadLengthPercent: 0.9,
 
+                valueCircleRadius: 30,
+
                 minAngle: -90,
                 maxAngle: 90,
 
@@ -177,8 +179,8 @@ class ReactSpeedometer extends React.Component {
                 // label format
                 labelFormat: d3Format( PROPS.valueFormat ),
                 // value text string (template string)
-                currentValueText: PROPS.currentValueText
-
+                currentValueText: PROPS.currentValueText,
+                valueCircleRadius: PROPS.valueCircleRadius || default_config.valueCircleRadius
 
             };
             // END: Configurable values
@@ -356,8 +358,6 @@ class ReactSpeedometer extends React.Component {
                     .attr('class', 'segment-value')
                     // styling stuffs
                     .style("text-anchor", "middle")
-                    .style("font-size", "14px")
-                    .style("font-weight", "bold")
                     .style("fill", config.textColor);
 
 
@@ -370,7 +370,6 @@ class ReactSpeedometer extends React.Component {
                 ];
 
                 const pointerLine = d3Line()
-                                    // .curve( d3.curveMonotoneX );
                                     .curve( d3CurveMonotoneX );
 
                 const pg = svg.append('g').data([lineData])
@@ -382,7 +381,7 @@ class ReactSpeedometer extends React.Component {
                       svg.append("g")
                       .attr("transform", centerTx)
                       .append("circle")
-                      .attr("r", 30.0)
+                      .attr("r", config.valueCircleRadius)
                       .attr('class', 'valueCircle')
                       .style("stroke", config.textColor);
 
@@ -396,10 +395,6 @@ class ReactSpeedometer extends React.Component {
                     .attr("dominant-baseline", "central")
                     // add text
                     .text( config.currentValue || "" )
-                    .style("font-size", "24px")
-                    .style("font-family", "sans-serif")
-                    // .style("font-weight", "bold")
-                    // .style("fill", "#666");
                     .style("fill", config.textColor);
 
 

@@ -1,0 +1,14 @@
+.valueCircle {
+    fill: white;
+}
+
+svg.speedometer text.current-value {
+    font-family: sans-serif;
+    font-size: 24px;
+}
+
+svg.speedometer text.segment-value {
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+}

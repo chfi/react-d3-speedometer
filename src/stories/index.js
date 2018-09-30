@@ -106,7 +106,7 @@ storiesOf('react-d3-speedometer', module)
                 max: maxValue,
                 step: 10
             };
-            const value = number('Value', 473, valueOptions);
+            const value = number('Value', 287, valueOptions);
 
             const arcAngleOptions = {
                 range: true,
@@ -117,7 +117,7 @@ storiesOf('react-d3-speedometer', module)
             const minAngle = number('Minimum arc angle', -120, arcAngleOptions);
             const maxAngle = number('Maximum arc angle',  90, arcAngleOptions);
 
-            const ringWidth = number('Segment ring width', 4);
+            const ringWidth = number('Segment ring width', 3);
 
             const ringInset  = number('Outer-radius to segment distance', 0);
             const labelInset = number('Outer-radius to value label distance', 58);
@@ -135,6 +135,23 @@ storiesOf('react-d3-speedometer', module)
 
             const numTicks3 = number('Number of step 3 ticks', 20);
             const tickLength3 = number('Step 3 tick length', 14);
+
+            const heatMean = number('Heat center', 287, valueOptions);
+            const heatStddev = number('Heat spread', 30);
+
+            const heatfun =
+                  (mean, stddev) =>
+                  {
+                      let f = (x) => {
+                          let expNom = -Math.pow(x - mean, 2);
+                          let expDen = 2*Math.pow(stddev, 2);
+                          let denom  = Math.sqrt(2*Math.PI*Math.pow(stddev, 2));
+                          return Math.exp(expNom/expDen)/denom;
+                      }
+                      return (x) => f(x)/f(mean);
+                  };
+
+            const heatFun = heatfun(heatMean, heatStddev);
 
             const tickSegments =
                 [ { numTicks: numTicks1, tickLength: tickLength1 },
@@ -154,12 +171,13 @@ storiesOf('react-d3-speedometer', module)
                     pointerHeadLengthPercent={0.75}
                     valueCircleRadius={valueCircleRadius}
                     needleColor="red"
-                    startColor="green"
+                    startColor="grey"
+                    endColor="grey"
                     segments={segments}
                     tickSegments={tickSegments}
-                    endColor="blue"
                     textColor="grey"
                     forceRender="true"
+                    heatFun={heatFun}
                     />)},
         { source: true, inline: true, header: false }
     )

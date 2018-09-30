@@ -297,7 +297,6 @@ class ReactSpeedometer extends React.Component {
                                 .attr('transform', centerTx);
 
                           const ticks = arcTicks(numTicks)({minA: minAngleRad, maxA: maxAngleRad});
-                          console.log(ticks);
 
                           return ticks
                               .map(rad2Cartesian)
@@ -324,6 +323,36 @@ class ReactSpeedometer extends React.Component {
                 }
 
 
+                if (typeof PROPS.heatFun === "function") {
+
+                    const heat = svg.append('g')
+                          .attr('class', 'arc')
+                          .attr('transform', centerTx);
+
+                    const heatSegments = PROPS.heatSegments || 75
+                    const heatTicks = d3Range(heatSegments).map(() => 1 / heatSegments);
+
+                    const heatArc =
+                          d3Arc()
+                          .innerRadius(config.valueCircleRadius)
+                          .outerRadius(config.width/2 - config.ringWidth - config.ringInset)
+                          .startAngle((d,i) => deg2rad(config.minAngle + (d * i * angleRange)))
+                          .endAngle(  (d,i) => deg2rad(config.minAngle + (d * (i + 1) * angleRange)));
+
+                    const heatColorFun = (d, i) =>
+                          d3InterpolateHsl(
+                              (PROPS.heatColorStart || d3Rgb(255, 255, 255, 0.0)),
+                              (PROPS.heatColorEnd   || d3Rgb(255, 0, 0, 0.5)))(PROPS.heatFun(d*i*(config.maxValue - config.minValue)));
+
+                    heat.selectAll('path')
+                        .data(heatTicks)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'heat-segment')
+                        .attr('fill', heatColorFun)
+                        .attr('d', heatArc);
+                }
+
                 const arcs = svg.append('g')
                                 .attr('class', 'arc')
                                 .attr('transform', centerTx);
@@ -334,9 +363,10 @@ class ReactSpeedometer extends React.Component {
                         .append('path')
                         .attr('class', 'speedo-segment')
                         .attr('fill', function(d, i) {
-                            return config.arcColorFn(d * i);
+                            return config.arcColorFn(1.0);
                         })
                         .attr('d', arc);
+
 
                 const lg = svg.append('g')
                             .attr('class', 'label')
@@ -437,9 +467,7 @@ class ReactSpeedometer extends React.Component {
                 // update the pointer
                 self._d3_refs.pointer.transition()
                     .duration( config.needleTransitionDuration )
-                    // .ease( d3EaseLinear )
                     .ease( self.getTransitionMethod( config.needleTransition ) )
-                    // .ease( d3EaseElastic )
                     .attr('transform', 'rotate(' + newAngle + ')');
                 // update the current value
                 // self._d3_refs.current_value_text.text( config.labelFormat( newValue ) );
@@ -464,9 +492,7 @@ class ReactSpeedometer extends React.Component {
     };
 
     renderGauge () {
-        // console.log("rendering gauge ");
         // before rendering remove the existing gauge?
-        // d3.select( this.gaugeDiv )
         d3Select( this.gaugeDiv )
             .select("svg")
             .remove();
